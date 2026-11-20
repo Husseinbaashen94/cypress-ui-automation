@@ -1,0 +1,37 @@
+name: Cypress UI Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * 1' # every Monday 01:00 UTC, catches drift in the site under test
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, electron]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Run Cypress (${{ matrix.browser }})
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-report-${{ matrix.browser }}
+          path: cypress/reports
+          retention-days: 14
