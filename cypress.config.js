@@ -1,4 +1,8 @@
+const { existsSync } = require('node:fs');
 const { defineConfig } = require('cypress');
+
+// Optional local settings: copy .env.example to .env. Empty values fall back to the defaults below.
+if (existsSync('.env')) process.loadEnvFile('.env');
 
 module.exports = defineConfig({
   reporter: 'cypress-mochawesome-reporter',
@@ -10,7 +14,7 @@ module.exports = defineConfig({
     inlineAssets: true,
   },
   e2e: {
-    baseUrl: 'https://www.saucedemo.com',
+    baseUrl: process.env.BASE_URL || 'https://www.saucedemo.com',
     viewportWidth: 1280,
     viewportHeight: 800,
     defaultCommandTimeout: 8000,

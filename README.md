@@ -41,18 +41,59 @@ cypress.config.js        # base URL, retries, HTML reporter
 .github/workflows/ci.yml # Chrome / Firefox / Electron matrix
 ```
 
-## Run it
+## Getting started
 
-Requires Node.js 18+.
+### 1. Prerequisites
+
+| Tool | Version | Check | Install |
+|------|---------|-------|---------|
+| Node.js | 20.12 or newer (22 LTS recommended) | `node -v` | [nodejs.org](https://nodejs.org/) |
+| Git | any recent | `git --version` | [git-scm.com](https://git-scm.com/downloads) |
+
+Cypress downloads its own Electron browser. Chrome or Firefox are optional and only needed to run in those browsers.
+
+### 2. Clone and install
 
 ```bash
-npm install
-npm test                 # headless, Electron
-npm run test:chrome      # headless, Chrome
-npm run cy:open          # interactive runner
+git clone https://github.com/Husseinbaashen94/cypress-ui-automation.git
+cd cypress-ui-automation
+npm install          # installs Cypress and the HTML reporter
 ```
 
-An HTML report with embedded failure screenshots is written to `cypress/reports/index.html`.
+### 3. Configure (optional)
+
+Everything works out of the box. To change a setting, copy the template and fill in only what you need:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Purpose and default |
+|----------|---------------------|
+| `BASE_URL` | Site under test. Default `https://www.saucedemo.com` |
+
+Empty values use the default. `.env` is git-ignored, so nothing you put in it is ever committed.
+
+### 4. Run the tests
+
+```bash
+npm test                 # all specs, headless (Electron)
+npm run test:chrome      # all specs, headless Chrome
+npx cypress run --spec cypress/e2e/login.cy.js   # one spec file
+npm run cy:open          # interactive runner: pick specs and watch them run
+```
+
+### 5. View the report
+
+Open `cypress/reports/index.html` in a browser. It has pass/fail charts and embedded screenshots of any failures.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `Cypress binary is missing` | Run `npx cypress install` |
+| `process.loadEnvFile is not a function` | Upgrade Node.js to 20.12 or newer |
+| Tests time out on the first run | The demo site may be slow; re-run. CI retries once automatically |
 
 ## CI
 
